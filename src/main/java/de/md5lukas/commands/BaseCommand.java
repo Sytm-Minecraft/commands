@@ -26,13 +26,13 @@ public abstract class BaseCommand extends SubCommand implements CommandExecutor,
     }
 
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    public final boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         this.onCommand(sender, new LinkedList<>(Arrays.asList(args)));
         return true;
     }
 
     @Override
-    public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
+    public final List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         return this.onTabComplete(sender, new LinkedList<>(Arrays.asList(args)));
     }
 
@@ -42,7 +42,7 @@ public abstract class BaseCommand extends SubCommand implements CommandExecutor,
      * @param plugin The plugin to use to register this command
      */
     @SuppressWarnings("ConstantConditions")
-    public void register(JavaPlugin plugin) {
+    public final void register(JavaPlugin plugin) {
         Preconditions
                 .checkNotNull(plugin.getCommand(getName()), "It seems like the command with the name %s has not been registered in the plugin.yml", getName());
         plugin.getCommand(getName()).setExecutor(this);

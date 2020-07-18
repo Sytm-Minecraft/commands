@@ -46,7 +46,7 @@ public abstract class SubCommand {
      * @param isTabCompletion <code>true</code> if this was caused by an tab completion or not
      * @return <code>true</code> if the command sender is allowed to access this command
      */
-    public boolean guard(CommandSender sender, List<String> args, boolean isTabCompletion) {
+    protected boolean guard(CommandSender sender, List<String> args, boolean isTabCompletion) {
         return true;
     }
 
@@ -80,7 +80,7 @@ public abstract class SubCommand {
     }
 
     //<editor-fold desc="onCommand">
-    void onCommand(CommandSender sender, LinkedList<String> args) {
+    final void onCommand(CommandSender sender, LinkedList<String> args) {
         if (!guard(sender, args, false)) {
             return;
         }
@@ -103,7 +103,7 @@ public abstract class SubCommand {
      *
      * @param sender The issuer of the command
      */
-    public void run(CommandSender sender) {
+    protected void run(CommandSender sender) {
         sender.sendMessage(NOT_IMPLEMENTED.replace("%name%", getName()));
     }
 
@@ -113,7 +113,7 @@ public abstract class SubCommand {
      * @param sender The issuer of the command
      * @param args   Any additional arguments
      */
-    public void run(CommandSender sender, List<String> args) {
+    protected void run(CommandSender sender, List<String> args) {
         sender.sendMessage(NOT_IMPLEMENTED.replace("%name%", getName()));
     }
     //</editor-fold>
@@ -144,7 +144,7 @@ public abstract class SubCommand {
      * @param args   The arguments that have been provided so far, can be empty
      * @return What the issuer should get recommended for tab-completions
      */
-    public List<String> tabComplete(CommandSender sender, List<String> args) {
+    protected List<String> tabComplete(CommandSender sender, List<String> args) {
         return Collections.emptyList();
     }
     //</editor-fold>
