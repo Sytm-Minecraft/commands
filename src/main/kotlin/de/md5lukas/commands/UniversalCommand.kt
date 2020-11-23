@@ -18,18 +18,19 @@
 
 package de.md5lukas.commands
 
-import org.bukkit.command.Command
-import org.bukkit.command.CommandExecutor
+import de.md5lukas.commands.generic.GenericCommandOptions
+import de.md5lukas.commands.generic.GenericSubCommand
 import org.bukkit.command.CommandSender
-import org.bukkit.command.TabCompleter
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
+import org.bukkit.command.Command as BukkitCommand
 
-class Command @PublishedApi internal constructor(options: CommandOptions) : SubCommand(options, options, ""), CommandExecutor, TabCompleter {
+class UniversalCommand @PublishedApi internal constructor(options: GenericCommandOptions<CommandSender>) :
+    GenericSubCommand<CommandSender>(options, options, ""), de.md5lukas.commands.generic.Command {
 
     override fun onCommand(
         sender: CommandSender,
-        command: Command,
+        command: BukkitCommand,
         label: String,
         args: Array<out String>
     ): Boolean {
@@ -43,7 +44,7 @@ class Command @PublishedApi internal constructor(options: CommandOptions) : SubC
 
     override fun onTabComplete(
         sender: CommandSender,
-        command: Command,
+        command: BukkitCommand,
         alias: String,
         args: Array<out String>
     ): MutableList<String> {
@@ -53,7 +54,7 @@ class Command @PublishedApi internal constructor(options: CommandOptions) : SubC
         return ArrayList(this.onTabComplete(sender, linkedArgs))
     }
 
-    fun register(plugin: JavaPlugin) {
+    override fun register(plugin: JavaPlugin) {
         val pc = plugin.getCommand(name)
             ?: throw IllegalStateException("The plugin ${plugin.name} has not a command registered with the name $name")
         pc.setExecutor(this)

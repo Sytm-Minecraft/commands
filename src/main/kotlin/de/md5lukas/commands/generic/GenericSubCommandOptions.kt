@@ -16,12 +16,14 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.md5lukas.commands
+package de.md5lukas.commands.generic
 
+import de.md5lukas.commands.CommandDsl
+import de.md5lukas.commands.LambdaSingleton
 import org.bukkit.command.CommandSender
 
 @CommandDsl
-open class SubCommandOptions @PublishedApi internal constructor(val name: String) {
+open class GenericSubCommandOptions<T : CommandSender> @PublishedApi internal constructor(val name: String) {
 
     init {
         if (name.contains(' ')) {
@@ -30,10 +32,10 @@ open class SubCommandOptions @PublishedApi internal constructor(val name: String
     }
 
     @PublishedApi
-    internal val subCommands: MutableList<SubCommandOptions> = ArrayList()
+    internal val subCommands: MutableList<GenericSubCommandOptions<T>> = ArrayList()
 
-    inline fun subcommand(name: String, init: SubCommandOptions.() -> Unit) {
-        subCommands.add(SubCommandOptions(name).apply(init))
+    inline fun subcommand(name: String, init: GenericSubCommandOptions<T>.() -> Unit) {
+        subCommands.add(GenericSubCommandOptions<T>(name).apply(init))
     }
 
     var aliases: Set<String> = emptySet()
@@ -46,16 +48,16 @@ open class SubCommandOptions @PublishedApi internal constructor(val name: String
             field = value
         }
 
-    var shortDescription: (sender: CommandSender) -> String = LambdaSingleton.shortDescription
-    var description: (sender: CommandSender) -> String = LambdaSingleton.description
+    var shortDescription: (sender: T) -> String = LambdaSingleton.shortDescription
+    var description: (sender: T) -> String = LambdaSingleton.description
 
-    var guard: (sender: CommandSender) -> Boolean = LambdaSingleton.guard
+    var guard: (sender: T) -> Boolean = LambdaSingleton.guard
 
-    var guardFailed: (sender: CommandSender) -> Unit = LambdaSingleton.guardFailed
+    var guardFailed: (sender: T) -> Unit = LambdaSingleton.guardFailed
 
-    var run: ((sender: CommandSender) -> Unit)? = null
+    var run: ((sender: T) -> Unit)? = null
 
-    var runArgs: ((sender: CommandSender, args: List<String>) -> Unit)? = null
+    var runArgs: ((sender: T, args: List<String>) -> Unit)? = null
 
-    var tabCompleter: ((sender: CommandSender) -> Set<String>) = LambdaSingleton.tabCompleter
+    var tabCompleter: ((sender: T) -> Set<String>) = LambdaSingleton.tabCompleter
 }

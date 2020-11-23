@@ -18,10 +18,18 @@
 
 package de.md5lukas.commands
 
+import de.md5lukas.commands.generic.Command
+import de.md5lukas.commands.generic.GenericCommandOptions
+import de.md5lukas.commands.player.PlayerCommand
+import de.md5lukas.commands.player.PlayerCommandOptions
 import org.bukkit.command.CommandSender
 
-inline fun command(name: String, init: CommandOptions.() -> Unit): Command {
-    return Command(CommandOptions(name).apply(init))
+inline fun command(name: String, init: GenericCommandOptions<CommandSender>.() -> Unit): Command {
+    return UniversalCommand(GenericCommandOptions<CommandSender>(name).apply(init))
+}
+
+inline fun playerCommand(name: String, init: PlayerCommandOptions.() -> Unit): Command {
+    return PlayerCommand(PlayerCommandOptions(name).apply(init))
 }
 
 @DslMarker
@@ -63,5 +71,9 @@ internal object LambdaSingleton {
         it.sendMessage("You cannot access this command")
     }
 
-    val tabCompleter: ((sender: CommandSender) -> Set<String>) = { emptySet() }
+    val tabCompleter: (sender: CommandSender) -> Set<String> = { emptySet() }
+
+    val notAPlayerMessage: (sender: CommandSender) -> Unit = {
+        it.sendMessage("You are not a player")
+    }
 }

@@ -16,23 +16,23 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.md5lukas.commands
+package de.md5lukas.commands.generic
 
 import de.md5lukas.commons.collections.PaginationList
 import org.bukkit.command.CommandSender
 import java.util.*
 
-open class SubCommand
-    @PublishedApi
-    internal constructor(
-    private val rootOptions: CommandOptions,
-    options: SubCommandOptions,
+open class GenericSubCommand<T : CommandSender>
+@PublishedApi
+internal constructor(
+    private val rootOptions: GenericCommandOptions<T>,
+    options: GenericSubCommandOptions<T>,
     fullCommand: String
 ) {
 
     private val fullCommand: String = fullCommand + options.name
 
-    private val subCommands = options.subCommands.map { SubCommand(rootOptions, it, this.fullCommand) }
+    private val subCommands = options.subCommands.map { GenericSubCommand(rootOptions, it, this.fullCommand) }
 
     protected val name = options.name
     private val aliases = options.aliases
@@ -47,7 +47,7 @@ open class SubCommand
 
     private val tabCompleter = options.tabCompleter
 
-    private val helpEntries: PaginationList<((sender: CommandSender) -> Unit)> =
+    private val helpEntries: PaginationList<((sender: T) -> Unit)> =
         PaginationList(rootOptions.helpListingsPerPage)
 
     init {
@@ -57,7 +57,7 @@ open class SubCommand
         }
     }
 
-    protected fun onCommand(sender: CommandSender, args: LinkedList<String>, fullCommand: String) {
+    protected fun onCommand(sender: T, args: LinkedList<String>, fullCommand: String) {
         if (!guard(sender)) {
             guardFailed(sender)
             return
@@ -94,7 +94,7 @@ open class SubCommand
         }
     }
 
-    protected fun onTabComplete(sender: CommandSender, args: LinkedList<String>): Set<String> {
+    protected fun onTabComplete(sender: T, args: LinkedList<String>): Set<String> {
         if (!guard(sender)) {
             return emptySet()
         }
@@ -123,11 +123,11 @@ open class SubCommand
         return name == string || aliases.contains(string)
     }
 
-    private fun printHelp(sender: CommandSender) {
+    private fun printHelp(sender: T) {
         rootOptions.helpFormatter(sender, name, fullCommand, description(sender))
     }
 
-    private fun printShortHelp(sender: CommandSender) {
+    private fun printShortHelp(sender: T) {
         rootOptions.shortHelpFormatter(sender, name, fullCommand, shortDescription(sender))
     }
 }

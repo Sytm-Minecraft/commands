@@ -16,27 +16,14 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.md5lukas.commands
+package de.md5lukas.commands.player
 
+import de.md5lukas.commands.LambdaSingleton
+import de.md5lukas.commands.generic.GenericCommandOptions
 import org.bukkit.command.CommandSender
+import org.bukkit.entity.Player
 
-class CommandOptions @PublishedApi internal constructor(name: String) : SubCommandOptions(name) {
+class PlayerCommandOptions @PublishedApi internal constructor(name: String) : GenericCommandOptions<Player>(name) {
 
-    var notFoundMessage: ((sender: CommandSender, fullCommand: String) -> Unit) = LambdaSingleton.notFoundMessage
-
-    var helpListingsPerPage: Int = 10
-
-    var helpFormatter: ((
-        sender: CommandSender,
-        name: String,
-        fullCommand: String,
-        description: String
-    ) -> Unit) = LambdaSingleton.helpFormatter
-
-    var shortHelpFormatter: ((
-        sender: CommandSender,
-        name: String,
-        fullCommand: String,
-        shortDescription: String
-    ) -> Unit) = LambdaSingleton.shortHelpFormatter
+    var notAPlayerMessage: (sender: CommandSender) -> Unit = LambdaSingleton.notAPlayerMessage
 }
