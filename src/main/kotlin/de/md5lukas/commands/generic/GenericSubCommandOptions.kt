@@ -53,7 +53,7 @@ open class GenericSubCommandOptions<T : CommandSender> @PublishedApi internal co
 
     var guard: (sender: T) -> Boolean = LambdaSingleton.guard
 
-    var guardFailed: (sender: T) -> Unit = LambdaSingleton.guardFailed
+    open var guardFailed: ((sender: T) -> Unit)? = null
 
     var run: ((sender: T) -> Unit)? = null
 

@@ -59,7 +59,13 @@ internal constructor(
 
     protected fun onCommand(sender: T, args: LinkedList<String>, fullCommand: String) {
         if (!guard(sender)) {
-            guardFailed(sender)
+            if (guardFailed != null) {
+                guardFailed.invoke(sender)
+            } else {
+                val guardFailed = rootOptions.guardFailed
+                    ?: throw IllegalStateException("The guardFailed option is null for this command ($name) and for the root command (${rootOptions.name})")
+                guardFailed(sender)
+            }
             return
         }
         if (args.isEmpty()) {

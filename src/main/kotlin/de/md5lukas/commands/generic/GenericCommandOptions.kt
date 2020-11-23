@@ -24,6 +24,18 @@ import org.bukkit.command.CommandSender
 open class GenericCommandOptions<T : CommandSender> @PublishedApi internal constructor(name: String) :
     GenericSubCommandOptions<T>(name) {
 
+    init {
+        super.guardFailed = LambdaSingleton.guardFailed
+    }
+
+    override var guardFailed: ((sender: T) -> Unit)?
+        get() = super.guardFailed
+        set(value) {
+            @Suppress("SetterBackingFieldAssignment")
+            super.guardFailed = value
+                ?: throw IllegalArgumentException("Cannot set a null value for guardFailed in the root options")
+        }
+
     var notFoundMessage: ((sender: T, fullCommand: String) -> Unit) = LambdaSingleton.notFoundMessage
 
     var helpListingsPerPage: Int = 10
