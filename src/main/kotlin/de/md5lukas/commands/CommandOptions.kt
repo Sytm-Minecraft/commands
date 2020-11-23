@@ -16,15 +16,13 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.md5lukas.commands.dsl.options
+package de.md5lukas.commands
 
 import org.bukkit.command.CommandSender
 
-class BaseCommandOptions(name: String) : SubCommandOptions(name) {
+class CommandOptions @PublishedApi internal constructor(name: String) : SubCommandOptions(name) {
 
-    var notFoundMessage: ((sender: CommandSender, fullCommand: String) -> Unit) = { _, _ ->
-        TODO("Not found message not implemented yet")
-    }
+    var notFoundMessage: ((sender: CommandSender, fullCommand: String) -> Unit) = LambdaSingleton.notFoundMessage
 
     var helpListingsPerPage: Int = 10
 
@@ -33,19 +31,12 @@ class BaseCommandOptions(name: String) : SubCommandOptions(name) {
         name: String,
         fullCommand: String,
         description: String
-    ) -> Unit) = { sender, fullCommand, _, description ->
-        sender.sendMessage(
-            "&e$fullCommand\n" +
-                    "&7$description"
-        )
-    }
+    ) -> Unit) = LambdaSingleton.helpFormatter
 
     var shortHelpFormatter: ((
         sender: CommandSender,
         name: String,
         fullCommand: String,
         shortDescription: String
-    ) -> Unit) = { sender, fullCommand, _, shortDescription ->
-        sender.sendMessage("&e$fullCommand &8- &7$shortDescription")
-    }
+    ) -> Unit) = LambdaSingleton.shortHelpFormatter
 }

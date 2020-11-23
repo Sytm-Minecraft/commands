@@ -18,14 +18,14 @@
 
 package de.md5lukas.commands
 
-import de.md5lukas.commands.dsl.options.BaseCommandOptions
-import de.md5lukas.commands.dsl.options.SubCommandOptions
 import de.md5lukas.commons.collections.PaginationList
 import org.bukkit.command.CommandSender
 import java.util.*
 
-open class SubCommand(
-    private val rootOptions: BaseCommandOptions,
+open class SubCommand
+    @PublishedApi
+    internal constructor(
+    private val rootOptions: CommandOptions,
     options: SubCommandOptions,
     fullCommand: String
 ) {

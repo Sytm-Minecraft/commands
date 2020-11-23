@@ -16,11 +16,12 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.md5lukas.commands.dsl.options
+package de.md5lukas.commands
 
 import org.bukkit.command.CommandSender
 
-open class SubCommandOptions(val name: String) {
+@CommandDsl
+open class SubCommandOptions @PublishedApi internal constructor(val name: String) {
 
     init {
         if (name.contains(' ')) {
@@ -28,9 +29,10 @@ open class SubCommandOptions(val name: String) {
         }
     }
 
-    val subCommands: MutableList<SubCommandOptions> = ArrayList()
+    @PublishedApi
+    internal val subCommands: MutableList<SubCommandOptions> = ArrayList()
 
-    fun subcommand(name: String, init: SubCommandOptions.() -> Unit) {
+    inline fun subcommand(name: String, init: SubCommandOptions.() -> Unit) {
         subCommands.add(SubCommandOptions(name).apply(init))
     }
 
@@ -44,18 +46,16 @@ open class SubCommandOptions(val name: String) {
             field = value
         }
 
-    var shortDescription: (sender: CommandSender) -> String = { "No description provided" }
-    var description: (sender: CommandSender) -> String = { this.shortDescription(it) }
+    var shortDescription: (sender: CommandSender) -> String = LambdaSingleton.shortDescription
+    var description: (sender: CommandSender) -> String = LambdaSingleton.description
 
-    var guard: (sender: CommandSender) -> Boolean = { true }
+    var guard: (sender: CommandSender) -> Boolean = LambdaSingleton.guard
 
-    var guardFailed: (sender: CommandSender) -> Unit = {
-        it.sendMessage("You cannot access this command")
-    }
+    var guardFailed: (sender: CommandSender) -> Unit = LambdaSingleton.guardFailed
 
     var run: ((sender: CommandSender) -> Unit)? = null
 
     var runArgs: ((sender: CommandSender, args: List<String>) -> Unit)? = null
 
-    var tabCompleter: ((sender: CommandSender) -> Set<String>) = { emptySet() }
+    var tabCompleter: ((sender: CommandSender) -> Set<String>) = LambdaSingleton.tabCompleter
 }

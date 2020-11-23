@@ -18,7 +18,6 @@
 
 package de.md5lukas.commands
 
-import de.md5lukas.commands.dsl.options.BaseCommandOptions
 import org.bukkit.command.Command
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.CommandSender
@@ -26,7 +25,7 @@ import org.bukkit.command.TabCompleter
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
 
-class BaseCommand(options: BaseCommandOptions) : SubCommand(options, options), CommandExecutor, TabCompleter {
+class Command @PublishedApi internal constructor(options: CommandOptions) : SubCommand(options, options, ""), CommandExecutor, TabCompleter {
 
     override fun onCommand(
         sender: CommandSender,
