@@ -16,14 +16,14 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.md5lukas.commands.generic
+package de.md5lukas.commands.sub
 
 import de.md5lukas.commands.CommandDsl
 import de.md5lukas.commands.LambdaSingleton
 import org.bukkit.command.CommandSender
 
 @CommandDsl
-open class GenericSubCommandOptions<T : CommandSender> @PublishedApi internal constructor(val name: String) {
+open class SubCommandOptions<T : CommandSender> @PublishedApi internal constructor(val name: String) {
 
     init {
         if (name.contains(' ')) {
@@ -32,10 +32,10 @@ open class GenericSubCommandOptions<T : CommandSender> @PublishedApi internal co
     }
 
     @PublishedApi
-    internal val subCommands: MutableList<GenericSubCommandOptions<T>> = ArrayList()
+    internal val subCommands: MutableList<SubCommandOptions<T>> = ArrayList()
 
-    inline fun subcommand(name: String, init: GenericSubCommandOptions<T>.() -> Unit) {
-        subCommands.add(GenericSubCommandOptions<T>(name).apply(init))
+    inline fun subcommand(name: String, init: SubCommandOptions<T>.() -> Unit) {
+        subCommands.add(SubCommandOptions<T>(name).apply(init))
     }
 
     var aliases: Set<String> = emptySet()
@@ -52,6 +52,7 @@ open class GenericSubCommandOptions<T : CommandSender> @PublishedApi internal co
     var description: (sender: T) -> String = LambdaSingleton.description
 
     var guard: (sender: T) -> Boolean = LambdaSingleton.guard
+    var permissionGuard: String? = null
 
     open var guardFailed: ((sender: T) -> Unit)? = null
 

@@ -16,14 +16,10 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.md5lukas.commands.player
+package de.md5lukas.commands
 
-import de.md5lukas.commands.LambdaSingleton
-import de.md5lukas.commands.universal.UniversalCommandOptions
-import org.bukkit.command.CommandSender
-import org.bukkit.entity.Player
+interface Command {
 
-class PlayerCommandOptions @PublishedApi internal constructor(name: String) : UniversalCommandOptions<Player>(name) {
-
-    var notAPlayerMessage: (sender: CommandSender) -> Unit = LambdaSingleton.notAPlayerMessage
+    val name: String
+    val fullCommand: String
 }

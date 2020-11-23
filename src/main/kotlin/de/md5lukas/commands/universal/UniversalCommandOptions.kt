@@ -16,13 +16,15 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.md5lukas.commands.generic
+package de.md5lukas.commands.universal
 
+import de.md5lukas.commands.Command
 import de.md5lukas.commands.LambdaSingleton
+import de.md5lukas.commands.sub.SubCommandOptions
 import org.bukkit.command.CommandSender
 
-open class GenericCommandOptions<T : CommandSender> @PublishedApi internal constructor(name: String) :
-    GenericSubCommandOptions<T>(name) {
+open class UniversalCommandOptions<T : CommandSender> @PublishedApi internal constructor(name: String) :
+    SubCommandOptions<T>(name) {
 
     init {
         super.guardFailed = LambdaSingleton.guardFailed
@@ -40,17 +42,24 @@ open class GenericCommandOptions<T : CommandSender> @PublishedApi internal const
 
     var helpListingsPerPage: Int = 10
 
-    var helpFormatter: ((
+    var helpHeader: ((
+        sender: T,
+        command: Command,
+        currentPage: Int,
+        allPages: Int,
+    ) -> Unit) = LambdaSingleton.helpHeader
+
+    var commandHelpFormatter: ((
         sender: T,
         name: String,
         fullCommand: String,
         description: String
-    ) -> Unit) = LambdaSingleton.helpFormatter
+    ) -> Unit) = LambdaSingleton.commandHelpFormatter
 
-    var shortHelpFormatter: ((
+    var commandShortHelpFormatter: ((
         sender: T,
         name: String,
         fullCommand: String,
         shortDescription: String
-    ) -> Unit) = LambdaSingleton.shortHelpFormatter
+    ) -> Unit) = LambdaSingleton.commandShortHelpFormatter
 }

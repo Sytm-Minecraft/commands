@@ -16,13 +16,13 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.md5lukas.commands.generic
+package de.md5lukas.commands
 
 import org.bukkit.command.CommandExecutor
 import org.bukkit.command.TabExecutor
 import org.bukkit.plugin.java.JavaPlugin
 
-interface Command : CommandExecutor, TabExecutor {
+interface ExecutableCommand : CommandExecutor, TabExecutor, Command {
 
     fun register(plugin: JavaPlugin)
 }

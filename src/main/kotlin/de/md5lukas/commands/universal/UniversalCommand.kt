@@ -16,17 +16,17 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.md5lukas.commands
+package de.md5lukas.commands.universal
 
-import de.md5lukas.commands.generic.GenericCommandOptions
-import de.md5lukas.commands.generic.GenericSubCommand
+import de.md5lukas.commands.ExecutableCommand
+import de.md5lukas.commands.sub.SubCommand
 import org.bukkit.command.CommandSender
 import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
 import org.bukkit.command.Command as BukkitCommand
 
-class UniversalCommand @PublishedApi internal constructor(options: GenericCommandOptions<CommandSender>) :
-    GenericSubCommand<CommandSender>(options, options, ""), de.md5lukas.commands.generic.Command {
+class UniversalCommand @PublishedApi internal constructor(options: UniversalCommandOptions<CommandSender>) :
+    SubCommand<CommandSender>(options, options, ""), ExecutableCommand {
 
     override fun onCommand(
         sender: CommandSender,

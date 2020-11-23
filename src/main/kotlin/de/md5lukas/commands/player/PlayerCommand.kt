@@ -18,7 +18,8 @@
 
 package de.md5lukas.commands.player
 
-import de.md5lukas.commands.generic.GenericSubCommand
+import de.md5lukas.commands.ExecutableCommand
+import de.md5lukas.commands.sub.SubCommand
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 import org.bukkit.plugin.java.JavaPlugin
@@ -26,7 +27,7 @@ import java.util.*
 import org.bukkit.command.Command as BukkitCommand
 
 class PlayerCommand @PublishedApi internal constructor(private val options: PlayerCommandOptions) :
-    GenericSubCommand<Player>(options, options, ""), de.md5lukas.commands.generic.Command {
+    SubCommand<Player>(options, options, ""), ExecutableCommand {
 
     override fun onCommand(
         sender: CommandSender,
@@ -54,7 +55,6 @@ class PlayerCommand @PublishedApi internal constructor(private val options: Play
     ): MutableList<String> {
         val linkedArgs = LinkedList<String>()
         args.forEach { linkedArgs.add(it) }
-
 
         return if (sender is Player) ArrayList(this.onTabComplete(sender, linkedArgs)) else mutableListOf()
     }

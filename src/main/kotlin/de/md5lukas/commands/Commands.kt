@@ -18,17 +18,17 @@
 
 package de.md5lukas.commands
 
-import de.md5lukas.commands.generic.Command
-import de.md5lukas.commands.generic.GenericCommandOptions
 import de.md5lukas.commands.player.PlayerCommand
 import de.md5lukas.commands.player.PlayerCommandOptions
+import de.md5lukas.commands.universal.UniversalCommand
+import de.md5lukas.commands.universal.UniversalCommandOptions
 import org.bukkit.command.CommandSender
 
-inline fun command(name: String, init: GenericCommandOptions<CommandSender>.() -> Unit): Command {
-    return UniversalCommand(GenericCommandOptions<CommandSender>(name).apply(init))
+inline fun command(name: String, init: UniversalCommandOptions<CommandSender>.() -> Unit): ExecutableCommand {
+    return UniversalCommand(UniversalCommandOptions<CommandSender>(name).apply(init))
 }
 
-inline fun playerCommand(name: String, init: PlayerCommandOptions.() -> Unit): Command {
+inline fun playerCommand(name: String, init: PlayerCommandOptions.() -> Unit): ExecutableCommand {
     return PlayerCommand(PlayerCommandOptions(name).apply(init))
 }
 
@@ -41,7 +41,16 @@ internal object LambdaSingleton {
         TODO("Not found message not implemented yet")
     }
 
-    val helpFormatter: ((
+    val helpHeader: ((
+        sender: CommandSender,
+        command: Command,
+        currentPage: Int,
+        allPages: Int,
+    ) -> Unit) = { sender, command, currentPage, allPages ->
+        sender.sendMessage("&6Help for &e${command.fullCommand}&7 Page &e$currentPage&7/&e$allPages")
+    }
+
+    val commandHelpFormatter: ((
         sender: CommandSender,
         name: String,
         fullCommand: String,
@@ -53,7 +62,7 @@ internal object LambdaSingleton {
         )
     }
 
-    val shortHelpFormatter: ((
+    val commandShortHelpFormatter: ((
         sender: CommandSender,
         name: String,
         fullCommand: String,

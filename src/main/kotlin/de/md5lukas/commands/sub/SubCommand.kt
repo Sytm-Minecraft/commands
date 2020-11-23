@@ -16,30 +16,35 @@
  *     along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package de.md5lukas.commands.generic
+package de.md5lukas.commands.sub
 
+import de.md5lukas.commands.Command
+import de.md5lukas.commands.universal.UniversalCommandOptions
 import de.md5lukas.commons.collections.PaginationList
 import org.bukkit.command.CommandSender
 import java.util.*
+import kotlin.math.max
+import kotlin.math.min
 
-open class GenericSubCommand<T : CommandSender>
+open class SubCommand<T : CommandSender>
 @PublishedApi
 internal constructor(
-    private val rootOptions: GenericCommandOptions<T>,
-    options: GenericSubCommandOptions<T>,
+    private val rootOptions: UniversalCommandOptions<T>,
+    options: SubCommandOptions<T>,
     fullCommand: String
-) {
+) : Command {
 
-    private val fullCommand: String = fullCommand + options.name
+    final override val name = options.name
+    final override val fullCommand: String = fullCommand + name
 
-    private val subCommands = options.subCommands.map { GenericSubCommand(rootOptions, it, this.fullCommand) }
+    private val subCommands = options.subCommands.map { SubCommand(rootOptions, it, this.fullCommand) }
 
-    protected val name = options.name
     private val aliases = options.aliases
     private val shortDescription = options.shortDescription
     private val description = options.description
 
     private val guard = options.guard
+    private val permissionGuard = options.permissionGuard
     private val guardFailed = options.guardFailed
 
     private val run = options.run
@@ -58,7 +63,7 @@ internal constructor(
     }
 
     protected fun onCommand(sender: T, args: LinkedList<String>, fullCommand: String) {
-        if (!guard(sender)) {
+        if (!checkGuard(sender)) {
             if (guardFailed != null) {
                 guardFailed.invoke(sender)
             } else {
@@ -77,6 +82,7 @@ internal constructor(
             return
         }
         val subCommandName = args.first().toLowerCase()
+        args.removeFirst()
         val newFullCommand = if (fullCommand.isEmpty()) {
             subCommandName
         } else {
@@ -84,7 +90,6 @@ internal constructor(
         }
         for (subCommand in subCommands) {
             if (subCommand.nameMatches(subCommandName)) {
-                args.removeFirst()
                 subCommand.onCommand(
                     sender,
                     args,
@@ -92,6 +97,25 @@ internal constructor(
                 )
                 return
             }
+        }
+        if (subCommandName.equals("help", true)) {
+            val page = min(
+                // Page number from arguments, if present, parse as int as possible, otherwise use 1
+                max(
+                    args.getOrNull(0)?.toIntOrNull() ?: 1,
+                    1
+                ),
+                // The amount of available pages minus one, because it is not zero-indexed
+                helpEntries.pages()
+            )
+
+            rootOptions.helpHeader(sender, this, page, helpEntries.pages())
+
+            for (helpEntry in helpEntries) {
+                helpEntry(sender)
+            }
+
+            return
         }
         if (runArgs == null) {
             rootOptions.notFoundMessage(sender, newFullCommand)
@@ -101,7 +125,7 @@ internal constructor(
     }
 
     protected fun onTabComplete(sender: T, args: LinkedList<String>): Set<String> {
-        if (!guard(sender)) {
+        if (!checkGuard(sender)) {
             return emptySet()
         }
         when (args.size) {
@@ -130,10 +154,13 @@ internal constructor(
     }
 
     private fun printHelp(sender: T) {
-        rootOptions.helpFormatter(sender, name, fullCommand, description(sender))
+        rootOptions.commandHelpFormatter(sender, name, fullCommand, description(sender))
     }
 
     private fun printShortHelp(sender: T) {
-        rootOptions.shortHelpFormatter(sender, name, fullCommand, shortDescription(sender))
+        rootOptions.commandShortHelpFormatter(sender, name, fullCommand, shortDescription(sender))
     }
+
+    private fun checkGuard(sender: T) =
+        (if (permissionGuard != null) sender.hasPermission(permissionGuard) else true) && guard(sender)
 }
