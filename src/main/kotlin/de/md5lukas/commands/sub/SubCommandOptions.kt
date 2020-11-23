@@ -1,5 +1,5 @@
 /*
- *     commands-kt - Library to define commands in a Kotlin-ish way
+ *     commands - Library to define commands in a Kotlin-ish way
  *     Copyright (C) 2020 Lukas Planz <lukas.planz@web.de>
  *
  *     This program is free software: you can redistribute it and/or modify
