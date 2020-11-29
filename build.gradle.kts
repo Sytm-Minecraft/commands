@@ -12,29 +12,23 @@ group = "de.md5lukas"
 version = "1.0.0-SNAPSHOT"
 description = "Command DSL for spigot"
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-    jcenter()
+allprojects {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
 
-    maven {
-        url = uri("https://repo.sytm.de/repository/maven-hosted/")
-    }
-
-    maven {
-        url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
-    }
-
-    maven {
-        url = uri("https://oss.sonatype.org/content/groups/public/")
+        maven(url = "https://repo.sytm.de/repository/maven-hosted/")
+        maven(url = "https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+        maven(url = "https://oss.sonatype.org/content/groups/public/")
     }
 }
 
 dependencies {
     api(kotlin("stdlib-jdk8"))
+    implementation("org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT")
     implementation("de.md5lukas:md5-commons:2.0.0-SNAPSHOT")
     compileOnly("org.jetbrains:annotations:20.1.0")
-    compileOnly("org.spigotmc:spigot-api:1.13.2-R0.1-SNAPSHOT")
 }
 
 tasks.withType<KotlinCompile> {

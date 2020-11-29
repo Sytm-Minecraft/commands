@@ -1,0 +1,8 @@
+name: CommandsTest
+version: ${version}
+main: de.md5lukas.commands.test.Main
+depend: [ Kotlin ]
+
+commands:
+  test:
+  player-test:
