@@ -25,5 +25,13 @@ import org.bukkit.entity.Player
 
 class PlayerCommandOptions @PublishedApi internal constructor(name: String) : UniversalCommandOptions<Player>(name) {
 
-    var notAPlayerMessage: (sender: CommandSender) -> Unit = LambdaSingleton.notAPlayerMessage
+    /**
+     * The message that a [CommandSender] should receive that tried to access this command but is not a player
+     */
+    var notAPlayerMessage: (
+        /**
+         * The sender who issued the command
+         */
+        sender: CommandSender
+    ) -> Unit = LambdaSingleton.notAPlayerMessage
 }

@@ -22,7 +22,16 @@ import org.bukkit.command.CommandExecutor
 import org.bukkit.command.TabExecutor
 import org.bukkit.plugin.java.JavaPlugin
 
+/**
+ * A executable command is a command that can be registered in a plugin
+ */
 interface ExecutableCommand : CommandExecutor, TabExecutor, Command {
 
+    /**
+     * Helper function that registers this command as the command and tab executor
+     *
+     * @param plugin The plugin to register the command for
+     * @throws IllegalStateException If the plugin has command registered with the [name]
+     */
     fun register(plugin: JavaPlugin)
 }

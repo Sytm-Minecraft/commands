@@ -25,7 +25,8 @@ import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
 import org.bukkit.command.Command as BukkitCommand
 
-class UniversalCommand @PublishedApi internal constructor(options: UniversalCommandOptions<CommandSender>) :
+@PublishedApi
+internal class UniversalCommand(options: UniversalCommandOptions<CommandSender>) :
     SubCommand<CommandSender>(options, options, ""), ExecutableCommand {
 
     override fun onCommand(

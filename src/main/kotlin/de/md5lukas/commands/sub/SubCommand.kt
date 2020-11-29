@@ -26,9 +26,8 @@ import java.util.*
 import kotlin.math.max
 import kotlin.math.min
 
-open class SubCommand<T : CommandSender>
 @PublishedApi
-internal constructor(
+internal open class SubCommand<T : CommandSender>(
     private val rootOptions: UniversalCommandOptions<T>,
     options: SubCommandOptions<T>,
     fullCommand: String
@@ -154,11 +153,11 @@ internal constructor(
     }
 
     private fun printHelp(sender: T) {
-        rootOptions.commandHelpFormatter(sender, name, fullCommand, description(sender))
+        rootOptions.commandHelpFormatter(sender, this, description(sender))
     }
 
     private fun printShortHelp(sender: T) {
-        rootOptions.commandShortHelpFormatter(sender, name, fullCommand, shortDescription(sender))
+        rootOptions.commandShortHelpFormatter(sender, this, shortDescription(sender))
     }
 
     private fun checkGuard(sender: T) =

@@ -18,8 +18,18 @@
 
 package de.md5lukas.commands
 
+/**
+ * Interface defining basic information about a command
+ */
 interface Command {
 
+    /**
+     * The name of the (sub-)command
+     */
     val name: String
+
+    /**
+     * The full command that must be typed to reach this command
+     */
     val fullCommand: String
 }

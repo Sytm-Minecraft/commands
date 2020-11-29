@@ -26,7 +26,7 @@ import org.bukkit.command.CommandSender
 open class SubCommandOptions<T : CommandSender> @PublishedApi internal constructor(val name: String) {
 
     init {
-        if (name.contains(' ')) {
+        if (' ' in name) {
             throw IllegalArgumentException("Command names may not contain spaces (\"$name\")")
         }
     }
@@ -34,31 +34,79 @@ open class SubCommandOptions<T : CommandSender> @PublishedApi internal construct
     @PublishedApi
     internal val subCommands: MutableList<SubCommandOptions<T>> = ArrayList()
 
+    /**
+     * Adds a subcommand to this command
+     *
+     * @param name The name of the subcommand
+     * @param init The initializer for the options
+     */
     inline fun subcommand(name: String, init: SubCommandOptions<T>.() -> Unit) {
         subCommands.add(SubCommandOptions<T>(name).apply(init))
     }
 
+    /**
+     * Aliases for the command
+     *
+     * @throws IllegalArgumentException If any of the aliases contains a space
+     */
     var aliases: Set<String> = emptySet()
         set(value) {
             value.forEach {
-                if (it.contains(' ')) {
+                if (' ' in it) {
                     throw IllegalArgumentException("Command name aliases may not contain spaces (\"$it\")")
                 }
             }
             field = value
         }
 
+    /**
+     * Callback function that is used to get the short description of a command.
+     * The sender is provided for i18n purposes
+     */
     var shortDescription: (sender: T) -> String = LambdaSingleton.shortDescription
+
+    /**
+     * Callback function that is used to get the full description of a command.
+     * The sender is provided for i18n purposes
+     */
     var description: (sender: T) -> String = LambdaSingleton.description
 
+    /**
+     * Guard callback that gets called every time someone tries to execute/tab-complete this command.
+     * Return `true` grant access, `false` to deny it.
+     *
+     * You should not send the sender any messages here, because he will receive them too if he tried to tab-complete
+     * this command. For that there is [guardFailed] that gets called only on attempted command execution to send
+     * the command issuer a message for example
+     */
     var guard: (sender: T) -> Boolean = LambdaSingleton.guard
+
+    /**
+     * If the only purpose of a guard is to check for a permission, this can be used instead.
+     */
     var permissionGuard: String? = null
 
+    /**
+     * Handler that gets called when someone called a command (not tab-completed) and failed the guard.
+     *
+     * On the root command options it cannot be set to a null value
+     *
+     * @throws IllegalArgumentException If this is the root options and the new value is `null`
+     */
     open var guardFailed: ((sender: T) -> Unit)? = null
 
+    /**
+     * This handler function is called if the command has no more additional arguments passed to it
+     */
     var run: ((sender: T) -> Unit)? = null
 
+    /**
+     * This handler function is called if no more subcommands are left or no subcommand matches the provided arguments.
+     */
     var runArgs: ((sender: T, args: List<String>) -> Unit)? = null
 
+    /**
+     * This method can return additional elements that should be added to the tab completions
+     */
     var tabCompleter: ((sender: T) -> Set<String>) = LambdaSingleton.tabCompleter
 }

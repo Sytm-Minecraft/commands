@@ -24,10 +24,24 @@ import de.md5lukas.commands.universal.UniversalCommand
 import de.md5lukas.commands.universal.UniversalCommandOptions
 import org.bukkit.command.CommandSender
 
+/**
+ * Creates a command using the [name] and initializes it with the given options
+ *
+ * @param name The name of the command
+ * @param init The initializer for the options
+ * @return A command that can be registered in a plugin
+ */
 inline fun command(name: String, init: UniversalCommandOptions<CommandSender>.() -> Unit): ExecutableCommand {
     return UniversalCommand(UniversalCommandOptions<CommandSender>(name).apply(init))
 }
 
+/**
+ * Creates a player only command using the [name] and initializes it with the given options
+ *
+ * @param name The name of the command
+ * @param init The initializer for the options
+ * @return A command that can be registered in a plugin
+ */
 inline fun playerCommand(name: String, init: PlayerCommandOptions.() -> Unit): ExecutableCommand {
     return PlayerCommand(PlayerCommandOptions(name).apply(init))
 }
@@ -52,23 +66,21 @@ internal object LambdaSingleton {
 
     val commandHelpFormatter: ((
         sender: CommandSender,
-        name: String,
-        fullCommand: String,
+        command: Command,
         description: String
-    ) -> Unit) = { sender, fullCommand, _, description ->
+    ) -> Unit) = { sender, command, description ->
         sender.sendMessage(
-            "&e$fullCommand\n" +
+            "&e${command.fullCommand}\n" +
                     "&7$description"
         )
     }
 
     val commandShortHelpFormatter: ((
         sender: CommandSender,
-        name: String,
-        fullCommand: String,
+        command: Command,
         shortDescription: String
-    ) -> Unit) = { sender, fullCommand, _, shortDescription ->
-        sender.sendMessage("&e$fullCommand &8- &7$shortDescription")
+    ) -> Unit) = { sender, command, shortDescription ->
+        sender.sendMessage("&e${command.fullCommand} &8- &7$shortDescription")
     }
 
     val shortDescription: (sender: CommandSender) -> String = { "No short description provided" }

@@ -26,7 +26,8 @@ import org.bukkit.plugin.java.JavaPlugin
 import java.util.*
 import org.bukkit.command.Command as BukkitCommand
 
-class PlayerCommand @PublishedApi internal constructor(private val options: PlayerCommandOptions) :
+@PublishedApi
+internal class PlayerCommand(private val options: PlayerCommandOptions) :
     SubCommand<Player>(options, options, ""), ExecutableCommand {
 
     override fun onCommand(
