@@ -37,8 +37,8 @@ internal annotation class CommandDsl
 
 internal object LambdaSingleton {
 
-    val notFoundMessage: ((sender: CommandSender, fullCommand: String) -> Unit) = { _, _ ->
-        TODO("Not found message not implemented yet")
+    val notFoundMessage: ((sender: CommandSender, fullCommand: String) -> Unit) = { sender, fullCommand ->
+        sender.sendMessage("The command $fullCommand could not be found")
     }
 
     val helpHeader: ((
